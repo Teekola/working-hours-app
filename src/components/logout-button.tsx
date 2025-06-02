@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 
-import { Button } from "@/src/components/ui/button";
-import { createClient } from "@/src/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
 
 export function LogoutButton() {
    const router = useRouter();

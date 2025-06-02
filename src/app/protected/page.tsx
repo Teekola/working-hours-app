@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { createClient } from "@/src/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function ProtectedPage() {
    const supabase = await createClient();
