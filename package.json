@@ -5,7 +5,9 @@
       "build": "next build",
       "start": "next start",
       "lint": "next lint",
-      "format": "prettier . --write"
+      "format": "prettier . --write",
+      "postinstall": "prisma generate",
+      "vercel-build": "prisma migrate deploy && next build"
    },
    "dependencies": {
       "@prisma/client": "^6.8.2",

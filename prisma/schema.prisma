@@ -7,3 +7,37 @@ datasource db {
    url       = env("DATABASE_URL")
    directUrl = env("DIRECT_DATABASE_URL")
 }
+
+model User {
+   id               String      @id @map("id") // Matches Supabase auth.users.id (UUID)
+   projects         Project[]   @relation(name: "ProjectOwner")
+   defaultProjectId Int?        @unique
+   defaultProject   Project?    @relation(name: "DefaultProject", fields: [defaultProjectId], references: [id])
+   workEntries      WorkEntry[]
+}
+
+model Project {
+   id             Int         @id @default(autoincrement())
+   name           String
+   ownerId        String
+   owner          User        @relation(name: "ProjectOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+   workEntries    WorkEntry[]
+   createdAt      DateTime    @default(now())
+   defaultForUser User?       @relation(name: "DefaultProject")
+
+   @@index([ownerId])
+}
+
+model WorkEntry {
+   id        Int      @id @default(autoincrement())
+   userId    String
+   projectId Int
+   date      DateTime
+   hours     Float
+   month     Int
+   year      Int
+   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+   @@index([userId, projectId, date])
+}
