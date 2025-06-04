@@ -4,20 +4,24 @@ export class WorkEntryDB {
    async findWorkEntry({
       userId,
       projectId,
-      date,
+      day,
+      month,
+      year,
    }: {
       userId: string;
       projectId: number;
-      date: Date;
+      day: number;
+      month: number;
+      year: number;
    }) {
       return prisma.workEntry.findUnique({
          where: {
             userId_projectId_day_month_year: {
                userId,
                projectId,
-               day: date.getDate(),
-               month: date.getMonth() + 1,
-               year: date.getFullYear(),
+               day,
+               month,
+               year,
             },
          },
       });
@@ -26,12 +30,16 @@ export class WorkEntryDB {
    async upsertWorkRecord({
       userId,
       projectId,
-      date,
+      day,
+      month,
+      year,
       hours,
    }: {
       userId: string;
       projectId: number;
-      date: Date;
+      day: number;
+      month: number;
+      year: number;
       hours: number;
    }) {
       return prisma.workEntry.upsert({
@@ -39,18 +47,18 @@ export class WorkEntryDB {
             userId_projectId_day_month_year: {
                userId,
                projectId,
-               day: date.getDate(),
-               month: date.getMonth() + 1,
-               year: date.getFullYear(),
+               day,
+               month,
+               year,
             },
          },
          create: {
             user: { connect: { id: userId } },
             project: { connect: { id: projectId } },
             hours,
-            day: date.getDate(),
-            month: date.getMonth() + 1,
-            year: date.getFullYear(),
+            day,
+            month,
+            year,
          },
          update: { hours },
       });

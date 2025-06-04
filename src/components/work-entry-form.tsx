@@ -74,7 +74,9 @@ export function WorkEntryForm({
       startTransition(async () => {
          const result = await getWorkEntry({
             projectId,
-            date,
+            day: date.getDate(),
+            month: date.getMonth() + 1,
+            year: date.getFullYear(),
          });
          form.setValue("hours", result.hours + "");
       });
@@ -83,7 +85,11 @@ export function WorkEntryForm({
    async function onSubmit(data: z.infer<typeof schema>) {
       setIsSubmitting(true);
       const { hours, date } = data;
-      await upsertWorkEntry({ projectId, hours: Number(hours), date });
+
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      await upsertWorkEntry({ projectId, hours: Number(hours), day, month, year });
       setIsSubmitting(false);
    }
 

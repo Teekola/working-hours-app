@@ -6,7 +6,9 @@ import { Prisma } from "@/lib/generated/prisma";
 
 type UpsertWorkEntryInput = {
    projectId: number;
-   date: Date;
+   day: number;
+   month: number;
+   year: number;
    hours: number;
 };
 
@@ -25,12 +27,14 @@ export type UpsertWorkEntryResult = UpsertWorkEntrySuccess | UpsertWorkEntryErro
 export async function upsertWorkEntry(input: UpsertWorkEntryInput): Promise<UpsertWorkEntryResult> {
    try {
       const user = await getAuthUser();
-      const { date, hours, projectId } = input;
+      const { day, month, year, hours, projectId } = input;
 
       const result = await db.workEntry.upsertWorkRecord({
          userId: user.id,
          projectId,
-         date,
+         day,
+         month,
+         year,
          hours,
       });
 
@@ -45,16 +49,20 @@ export async function upsertWorkEntry(input: UpsertWorkEntryInput): Promise<Upse
 
 type GetWorkEntryParams = {
    projectId: number;
-   date: Date;
+   day: number;
+   month: number;
+   year: number;
 };
 
-export async function getWorkEntry({ projectId, date }: GetWorkEntryParams) {
+export async function getWorkEntry({ projectId, day, month, year }: GetWorkEntryParams) {
    const user = await getAuthUser();
 
    const entry = await db.workEntry.findWorkEntry({
       userId: user.id,
       projectId,
-      date,
+      day,
+      month,
+      year,
    });
 
    if (!entry) {
