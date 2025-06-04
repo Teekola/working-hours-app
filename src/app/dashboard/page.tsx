@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { db } from "@/lib/db";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
@@ -11,9 +11,11 @@ export default async function DashboardPage() {
       redirect("/auth/login");
    }
 
-   return (
-      <div className="flex w-full flex-1 flex-col gap-12">
-         <Link href="/dashboard/projects">Projects</Link>
-      </div>
-   );
+   const { defaultProject } = await db.project.findUserProjects(data.user.id);
+
+   if (!defaultProject) {
+      redirect("/dashboard/projects");
+   }
+
+   redirect(`/dashboard/projects/${defaultProject.id}`);
 }

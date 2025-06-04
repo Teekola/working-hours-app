@@ -5,6 +5,19 @@ export class ProjectDB {
       return prisma.project.findUnique({ where: { id } });
    }
 
+   async findUserProjects(ownerId: string) {
+      const user = await prisma.user.findUnique({
+         where: { id: ownerId },
+         select: { defaultProject: true, projects: true },
+      });
+
+      return {
+         defaultProject: user?.defaultProject,
+         otherProjects:
+            user?.projects.filter((project) => project.id !== user.defaultProject?.id) ?? [],
+      };
+   }
+
    async create(data: { name: string; ownerId: string }) {
       return await prisma.$transaction(async (tx) => {
          // Create the project

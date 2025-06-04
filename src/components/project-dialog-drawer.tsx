@@ -2,6 +2,8 @@
 
 import * as React from "react";
 
+import { PlusIcon } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
    Dialog,
@@ -25,7 +27,7 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 
 import { ProjectForm } from "./project-form";
 
-type ProjectDialogDrawerProps = React.ComponentProps<typeof Dialog & typeof Drawer>;
+type ProjectDialogDrawerProps = React.ComponentProps<typeof Button>;
 
 export function ProjectDialogDrawer(props: ProjectDialogDrawerProps) {
    const [open, setOpen] = React.useState(false);
@@ -33,11 +35,13 @@ export function ProjectDialogDrawer(props: ProjectDialogDrawerProps) {
 
    if (isDesktop) {
       return (
-         <Dialog {...props} open={open} onOpenChange={setOpen}>
+         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-               <Button variant="outline">New Project</Button>
+               <Button variant="outline" {...props}>
+                  <PlusIcon className="-ml-2" /> New Project
+               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-[476px]">
+            <DialogContent className="max-w-[476px]" disableCloseOnOverlayClick>
                <DialogHeader>
                   <DialogTitle>New Project</DialogTitle>
                   <DialogDescription>Create a new project for tracking hours.</DialogDescription>
@@ -49,9 +53,11 @@ export function ProjectDialogDrawer(props: ProjectDialogDrawerProps) {
    }
 
    return (
-      <Drawer {...props} open={open} onOpenChange={setOpen}>
+      <Drawer open={open} onOpenChange={setOpen}>
          <DrawerTrigger asChild>
-            <Button variant="outline">New Project</Button>
+            <Button variant="outline" {...props}>
+               <PlusIcon className="-ml-2" /> New Project
+            </Button>
          </DrawerTrigger>
          <DrawerContent>
             <DrawerHeader className="text-left">

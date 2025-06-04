@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { PageHeading } from "@/components/page-heading";
 import { ProjectDialogDrawer } from "@/components/project-dialog-drawer";
 import { createClient } from "@/lib/supabase/server";
 
@@ -14,7 +15,7 @@ export default async function DashboardProjectsPage() {
    return (
       <div className="flex w-full flex-1 flex-col gap-12">
          <header className="flex flex-wrap items-center justify-between">
-            <h1 className="text-2xl font-bold">Projects</h1>
+            <PageHeading>Projects</PageHeading>
             <ProjectDialogDrawer />
          </header>
       </div>
