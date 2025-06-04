@@ -1,0 +1,70 @@
+"use client";
+
+import * as React from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+   Dialog,
+   DialogContent,
+   DialogDescription,
+   DialogHeader,
+   DialogTitle,
+   DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+   Drawer,
+   DrawerClose,
+   DrawerContent,
+   DrawerDescription,
+   DrawerFooter,
+   DrawerHeader,
+   DrawerTitle,
+   DrawerTrigger,
+} from "@/components/ui/drawer";
+import { useMediaQuery } from "@/hooks/use-media-query";
+
+import { ProjectForm } from "./project-form";
+
+type ProjectDialogDrawerProps = React.ComponentProps<typeof Dialog & typeof Drawer>;
+
+export function ProjectDialogDrawer(props: ProjectDialogDrawerProps) {
+   const [open, setOpen] = React.useState(false);
+   const isDesktop = useMediaQuery("(min-width: 425px)");
+
+   if (isDesktop) {
+      return (
+         <Dialog {...props} open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+               <Button variant="outline">New Project</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-[425px]">
+               <DialogHeader>
+                  <DialogTitle>New Project</DialogTitle>
+                  <DialogDescription>Create a new project for tracking hours.</DialogDescription>
+               </DialogHeader>
+               <ProjectForm />
+            </DialogContent>
+         </Dialog>
+      );
+   }
+
+   return (
+      <Drawer {...props} open={open} onOpenChange={setOpen}>
+         <DrawerTrigger asChild>
+            <Button variant="outline">New Project</Button>
+         </DrawerTrigger>
+         <DrawerContent>
+            <DrawerHeader className="text-left">
+               <DrawerTitle>New Project</DrawerTitle>
+               <DrawerDescription>Create a new project for tracking hours.</DrawerDescription>
+            </DrawerHeader>
+            <ProjectForm className="px-4" />
+            <DrawerFooter className="pt-2">
+               <DrawerClose asChild>
+                  <Button variant="outline">Cancel</Button>
+               </DrawerClose>
+            </DrawerFooter>
+         </DrawerContent>
+      </Drawer>
+   );
+}

@@ -3,22 +3,20 @@ import { Geist } from "next/font/google";
 
 import { ThemeProvider } from "next-themes";
 
+import { env } from "@/env";
+
 import "./globals.css";
 
-const defaultUrl = process.env.VERCEL_URL
-   ? `https://${process.env.VERCEL_URL}`
-   : "http://localhost:3000";
-
 export const metadata: Metadata = {
-   metadataBase: new URL(defaultUrl),
-   title: "Next.js and Supabase Starter Kit",
-   description: "The fastest way to build apps with Next.js and Supabase",
+   metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
+   title: "Simple Working Hours App",
+   description: "The easy way to track working hours, for free!",
 };
 
 const geistSans = Geist({
    variable: "--font-geist-sans",
    display: "swap",
-   subsets: ["latin"],
+   subsets: ["latin-ext"],
 });
 
 export default function RootLayout({
