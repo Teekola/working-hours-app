@@ -30,10 +30,13 @@ export default async function ProjectPage({
       notFound();
    }
 
+   const date = new Date();
    const workEntry = await db.workEntry.findWorkEntry({
       userId: data.user.id,
       projectId: currentProject.id,
-      date: new Date(),
+      day: date.getDate(),
+      month: date.getMonth(),
+      year: date.getFullYear(),
    });
 
    return (
