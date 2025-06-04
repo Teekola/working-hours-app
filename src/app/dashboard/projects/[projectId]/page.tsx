@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 
 import { ProjectSelect } from "@/components/project-select";
+import { WorkEntryForm } from "@/components/work-entry-form";
 import { db } from "@/lib/db";
 import { createClient } from "@/lib/supabase/server";
 
@@ -28,11 +29,29 @@ export default async function ProjectPage({
       notFound();
    }
 
+   const workEntry = await db.workEntry.findWorkEntry({
+      userId: data.user.id,
+      projectId: currentProject.id,
+      date: new Date(),
+   });
+
    return (
       <div className="flex w-full flex-1 flex-col gap-12">
          <header className="flex items-center justify-between gap-4">
             <ProjectSelect projects={allProjects} currentProjectName={currentProject.name} />
          </header>
+
+         <WorkEntryForm
+            projectId={currentProject.id}
+            defaultValues={
+               workEntry
+                  ? {
+                       date: new Date(workEntry.year, workEntry.month - 1, workEntry.day),
+                       hours: workEntry.hours + "",
+                    }
+                  : undefined
+            }
+         />
       </div>
    );
 }

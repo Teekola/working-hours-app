@@ -30,15 +30,15 @@ model Project {
 }
 
 model WorkEntry {
-   id        Int      @id @default(autoincrement())
+   id        Int     @id @default(autoincrement())
    userId    String
    projectId Int
-   date      DateTime
    hours     Float
+   day       Int
    month     Int
    year      Int
-   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-   @@index([userId, projectId, date])
+   @@unique([userId, projectId, day, month, year])
 }
