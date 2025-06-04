@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
+import HoursPerMonthTable from "@/components/hours-per-month-table";
 import { ProjectSelect } from "@/components/project-select";
 import { WorkEntryForm } from "@/components/work-entry-form";
 import { db } from "@/lib/db";
@@ -52,6 +53,8 @@ export default async function ProjectPage({
                   : undefined
             }
          />
+
+         <HoursPerMonthTable projectId={currentProject.id} />
       </div>
    );
 }
