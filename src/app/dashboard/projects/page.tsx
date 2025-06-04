@@ -13,8 +13,10 @@ export default async function DashboardProjectsPage() {
 
    return (
       <div className="flex w-full flex-1 flex-col gap-12">
-         <h1>Projects</h1>
-         <ProjectDialogDrawer />
+         <header className="flex flex-wrap items-center justify-between">
+            <h1 className="text-2xl font-bold">Projects</h1>
+            <ProjectDialogDrawer />
+         </header>
       </div>
    );
 }

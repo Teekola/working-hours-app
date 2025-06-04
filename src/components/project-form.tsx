@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { createProject } from "@/actions/project";
 import { Button } from "@/components/ui/button";
 import {
    Form,
@@ -16,13 +19,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
+import { ButtonLoading } from "./ui/button-loading";
+
 const projectSchema = z.object({
    projectName: z.string().min(2, {
       message: "Project name must be at least 2 characters.",
    }),
 });
-type ProjectFormProps = React.HTMLAttributes<HTMLFormElement>;
-export function ProjectForm(props: ProjectFormProps) {
+interface ProjectFormProps extends React.HTMLAttributes<HTMLFormElement> {
+   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+export function ProjectForm({ setOpen, ...props }: ProjectFormProps) {
+   const [isSubmitting, setIsSubmitting] = useState(false);
    const form = useForm<z.infer<typeof projectSchema>>({
       resolver: zodResolver(projectSchema),
       defaultValues: {
@@ -30,8 +38,19 @@ export function ProjectForm(props: ProjectFormProps) {
       },
    });
 
-   function onSubmit(data: z.infer<typeof projectSchema>) {
-      console.log(data);
+   async function onSubmit(data: z.infer<typeof projectSchema>) {
+      setIsSubmitting(true);
+      const createProjectResult = await createProject(data);
+
+      if (!createProjectResult.created) {
+         form.setError("projectName", { message: createProjectResult.error });
+         setIsSubmitting(false);
+         return;
+      }
+
+      console.log("Created project", createProjectResult.data);
+      setIsSubmitting(false);
+      setOpen(false);
    }
 
    return (
@@ -54,9 +73,16 @@ export function ProjectForm(props: ProjectFormProps) {
                   </FormItem>
                )}
             />
-            <Button type="submit" size="lg" className="w-full">
-               Submit
-            </Button>
+            {isSubmitting && (
+               <ButtonLoading size="lg" className="w-full">
+                  Submitting...
+               </ButtonLoading>
+            )}
+            {!isSubmitting && (
+               <Button type="submit" size="lg" className="w-full">
+                  Submit
+               </Button>
+            )}
          </form>
       </Form>
    );

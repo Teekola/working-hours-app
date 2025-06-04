@@ -29,7 +29,7 @@ type ProjectDialogDrawerProps = React.ComponentProps<typeof Dialog & typeof Draw
 
 export function ProjectDialogDrawer(props: ProjectDialogDrawerProps) {
    const [open, setOpen] = React.useState(false);
-   const isDesktop = useMediaQuery("(min-width: 425px)");
+   const isDesktop = useMediaQuery("(min-width: 476px)");
 
    if (isDesktop) {
       return (
@@ -37,12 +37,12 @@ export function ProjectDialogDrawer(props: ProjectDialogDrawerProps) {
             <DialogTrigger asChild>
                <Button variant="outline">New Project</Button>
             </DialogTrigger>
-            <DialogContent className="max-w-[425px]">
+            <DialogContent className="max-w-[476px]">
                <DialogHeader>
                   <DialogTitle>New Project</DialogTitle>
                   <DialogDescription>Create a new project for tracking hours.</DialogDescription>
                </DialogHeader>
-               <ProjectForm />
+               <ProjectForm setOpen={setOpen} />
             </DialogContent>
          </Dialog>
       );
@@ -58,7 +58,7 @@ export function ProjectDialogDrawer(props: ProjectDialogDrawerProps) {
                <DrawerTitle>New Project</DrawerTitle>
                <DrawerDescription>Create a new project for tracking hours.</DrawerDescription>
             </DrawerHeader>
-            <ProjectForm className="px-4" />
+            <ProjectForm className="px-4" setOpen={setOpen} />
             <DrawerFooter className="pt-2">
                <DrawerClose asChild>
                   <Button variant="outline">Cancel</Button>
