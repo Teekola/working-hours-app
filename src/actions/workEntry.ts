@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { getAuthUser } from "@/actions/utils";
 import { db } from "@/lib/db";
 import { Prisma } from "@/lib/generated/prisma";
@@ -37,6 +39,8 @@ export async function upsertWorkEntry(input: UpsertWorkEntryInput): Promise<Upse
          year,
          hours,
       });
+
+      revalidatePath(`/dashboard/projects/${projectId}`);
 
       return { success: true, data: result };
    } catch (error) {
