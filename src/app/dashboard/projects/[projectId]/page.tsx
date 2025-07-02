@@ -35,7 +35,7 @@ export default async function ProjectPage({
       userId: data.user.id,
       projectId: currentProject.id,
       day: date.getDate(),
-      month: date.getMonth(),
+      month: date.getMonth() + 1,
       year: date.getFullYear(),
    });
 
