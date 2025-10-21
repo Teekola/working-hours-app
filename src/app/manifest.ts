@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
    return {
       name: "Teemun Tunnit",
       short_name: "Tunnit",
-      start_url: "/",
+      start_url: "/dashboard",
       display: "standalone",
       background_color: "#000000",
       theme_color: "#000000",
