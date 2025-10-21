@@ -6,11 +6,12 @@ import { ThemeProvider } from "next-themes";
 import { env } from "@/env";
 
 import "./globals.css";
+import RegisterSW from "./register-sw";
 
 export const metadata: Metadata = {
    metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
-   title: "Simple Working Hours App",
-   description: "The easy way to track working hours, for free!",
+   title: "Teemun Tunnit",
+   description: "Helppo tapa seurata työtunteja – ilmaiseksi!",
 };
 
 const geistSans = Geist({
@@ -35,6 +36,7 @@ export default function RootLayout({
             >
                {children}
             </ThemeProvider>
+            <RegisterSW />
          </body>
       </html>
    );
