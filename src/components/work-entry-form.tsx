@@ -95,17 +95,19 @@ export function WorkEntryForm({
 
    const incrementHours = () => {
       const current = form.getValues("hours") ?? 0;
-      form.setValue("hours", "" + Math.min(Number(current) + 0.5, 24));
+      form.setValue("hours", "" + Math.min(Number(current) + 0.5, 24), { shouldDirty: true });
    };
 
    const decrementHours = () => {
       const current = form.getValues("hours") ?? 0;
-      form.setValue("hours", "" + Math.max(Number(current) - 0.5, 0));
+      form.setValue("hours", "" + Math.max(Number(current) - 0.5, 0), { shouldDirty: true });
    };
 
    const setPresetHours = (value: number) => {
-      form.setValue("hours", value + "");
+      form.setValue("hours", value + "", { shouldDirty: true });
    };
+
+   const canSubmit = form.formState.isDirty && !isSubmitting;
 
    return (
       <Form {...form}>
@@ -227,7 +229,7 @@ export function WorkEntryForm({
                )}
             />
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button type="submit" className="w-full" disabled={!canSubmit}>
                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                Save Entry
             </Button>
