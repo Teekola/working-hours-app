@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation";
-import { type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 import { type EmailOtpType } from "@supabase/supabase-js";
 
@@ -10,6 +9,7 @@ export async function GET(request: NextRequest) {
    const token_hash = searchParams.get("token_hash");
    const type = searchParams.get("type") as EmailOtpType | null;
    const next = searchParams.get("next") ?? "/";
+   const baseUrl = new URL(request.nextUrl).origin;
 
    if (token_hash && type) {
       const supabase = await createClient();
@@ -20,13 +20,19 @@ export async function GET(request: NextRequest) {
       });
       if (!error) {
          // redirect user to specified redirect URL or root of app
-         redirect(next);
+         return NextResponse.redirect(next, 303);
       } else {
          // redirect the user to an error page with some instructions
-         redirect(`/auth/error?error=${error?.message}`);
+         return NextResponse.redirect(
+            new URL(`/auth/error?error=${error?.message}`, baseUrl),
+            303
+         );
       }
    }
 
    // redirect the user to an error page with some instructions
-   redirect(`/auth/error?error=No token hash or type`);
+   NextResponse.redirect(
+      new URL(`/auth/error?error=No token hash or type`, baseUrl),
+      303
+   );
 }

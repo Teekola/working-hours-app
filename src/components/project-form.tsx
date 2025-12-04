@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 
-import { useRouter } from "next/navigation";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -39,7 +37,6 @@ export function ProjectForm({ setOpen, ...props }: ProjectFormProps) {
          projectName: "",
       },
    });
-   const router = useRouter();
 
    async function onSubmit(data: z.infer<typeof projectSchema>) {
       setIsSubmitting(true);
@@ -52,7 +49,7 @@ export function ProjectForm({ setOpen, ...props }: ProjectFormProps) {
       }
 
       console.log("Created project", createProjectResult.data);
-      router.push(`/dashboard/projects/${createProjectResult.data.id}`);
+
       setIsSubmitting(false);
       setOpen(false);
    }
