@@ -29,7 +29,11 @@ import {
    FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+   Popover,
+   PopoverContent,
+   PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 const schema = z.object({
@@ -89,18 +93,29 @@ export function WorkEntryForm({
       const day = date.getDate();
       const month = date.getMonth() + 1;
       const year = date.getFullYear();
-      await upsertWorkEntry({ projectId, hours: Number(hours), day, month, year });
+      await upsertWorkEntry({
+         projectId,
+         hours: Number(hours),
+         day,
+         month,
+         year,
+      });
+      form.reset();
       setIsSubmitting(false);
    }
 
    const incrementHours = () => {
       const current = form.getValues("hours") ?? 0;
-      form.setValue("hours", "" + Math.min(Number(current) + 0.5, 24), { shouldDirty: true });
+      form.setValue("hours", "" + Math.min(Number(current) + 0.5, 24), {
+         shouldDirty: true,
+      });
    };
 
    const decrementHours = () => {
       const current = form.getValues("hours") ?? 0;
-      form.setValue("hours", "" + Math.max(Number(current) - 0.5, 0), { shouldDirty: true });
+      form.setValue("hours", "" + Math.max(Number(current) - 0.5, 0), {
+         shouldDirty: true,
+      });
    };
 
    const setPresetHours = (value: number) => {
@@ -128,13 +143,20 @@ export function WorkEntryForm({
                            type="button"
                            variant="outline"
                            size="icon"
-                           onClick={() => field.onChange(addDays(field.value ?? new Date(), -1))}
+                           onClick={() =>
+                              field.onChange(
+                                 addDays(field.value ?? new Date(), -1)
+                              )
+                           }
                         >
                            <ChevronLeftIcon />
                         </Button>
 
                         {/* Date picker popover button */}
-                        <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                        <Popover
+                           open={popoverOpen}
+                           onOpenChange={setPopoverOpen}
+                        >
                            <PopoverTrigger asChild>
                               <FormControl>
                                  <Button
@@ -143,10 +165,14 @@ export function WorkEntryForm({
                                        "w-full pl-3 text-left font-normal",
                                        !field.value && "text-muted-foreground"
                                     )}
-                                    onClick={() => setPopoverOpen((prev) => !prev)}
+                                    onClick={() =>
+                                       setPopoverOpen((prev) => !prev)
+                                    }
                                  >
                                     {field.value ? (
-                                       format(field.value, "PPP", { locale: fi })
+                                       format(field.value, "PPP", {
+                                          locale: fi,
+                                       })
                                     ) : (
                                        <span>Pick a date</span>
                                     )}
@@ -173,7 +199,11 @@ export function WorkEntryForm({
                            type="button"
                            variant="outline"
                            size="icon"
-                           onClick={() => field.onChange(addDays(field.value ?? new Date(), 1))}
+                           onClick={() =>
+                              field.onChange(
+                                 addDays(field.value ?? new Date(), 1)
+                              )
+                           }
                         >
                            <ChevronRightIcon />
                         </Button>
@@ -230,12 +260,16 @@ export function WorkEntryForm({
             />
 
             <Button type="submit" className="w-full" disabled={!canSubmit}>
-               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+               {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+               )}
                Save Entry
             </Button>
 
             {isPending && (
-               <div className="text-sm text-muted-foreground">Loading data for selected date…</div>
+               <div className="text-sm text-muted-foreground">
+                  Loading data for selected date…
+               </div>
             )}
          </form>
       </Form>
@@ -247,7 +281,9 @@ const commaRegex = /\,/g;
 
 function transformDecimalInputValue(input: string, decimalSeparator = ".") {
    const replaceRegex = decimalSeparator === "," ? dotRegex : commaRegex;
-   let filteredValue = input.replace(/[^0-9.,]/g, "").replace(replaceRegex, decimalSeparator);
+   let filteredValue = input
+      .replace(/[^0-9.,]/g, "")
+      .replace(replaceRegex, decimalSeparator);
 
    const decimalIndex = filteredValue.indexOf(decimalSeparator);
 
