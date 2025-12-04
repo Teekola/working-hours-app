@@ -1,9 +1,11 @@
+import { env } from "@/env";
 import { PrismaClient } from "../src/lib/generated/prisma/client";
 
 import { PrismaPg } from "@prisma/adapter-pg";
+const POOLED_DATABASE_URL = env.DATABASE_URL;
 
 const adapter = new PrismaPg({
-   connectionString: process.env.DATABASE_URL,
+   connectionString: POOLED_DATABASE_URL,
 });
 
 const globalForPrisma = global as unknown as {
