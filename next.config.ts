@@ -6,6 +6,9 @@ if (!env) {
    console.log("No env imported");
 }
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+   cacheComponents: true,
+   typedRoutes: true,
+};
 
 export default nextConfig;

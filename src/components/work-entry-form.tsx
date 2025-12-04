@@ -1,25 +1,14 @@
 "use client";
 
-import { useEffect, useTransition } from "react";
 import React from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addDays, format } from "date-fns";
-import { fi } from "date-fns/locale";
-import {
-   CalendarIcon,
-   ChevronLeftIcon,
-   ChevronRightIcon,
-   Loader2,
-   Minus,
-   Plus,
-} from "lucide-react";
-import { useForm, useWatch } from "react-hook-form";
+import { Loader2, Minus, Plus } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { getWorkEntry, upsertWorkEntry } from "@/actions/workEntry";
+import { upsertWorkEntry } from "@/actions/workEntry";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
    Form,
    FormControl,
@@ -29,15 +18,9 @@ import {
    FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-   Popover,
-   PopoverContent,
-   PopoverTrigger,
-} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 const schema = z.object({
-   date: z.date(),
    hours: z
       .string({ message: "Hours must be a number" })
       .refine((v) => Number(v) <= 24 && Number(v) >= 0, {
@@ -47,51 +30,30 @@ const schema = z.object({
 
 interface WorkEntryFormProps extends React.HTMLAttributes<HTMLFormElement> {
    defaultValues?: {
-      date: Date;
       hours: string;
    };
    projectId: number;
+   date: Date;
 }
 
 export function WorkEntryForm({
    defaultValues,
    projectId,
+   date,
    ...props
 }: Readonly<WorkEntryFormProps>) {
-   const [isPending, startTransition] = useTransition();
    const [isSubmitting, setIsSubmitting] = React.useState(false);
-   const [popoverOpen, setPopoverOpen] = React.useState(false);
 
    const form = useForm<z.infer<typeof schema>>({
       resolver: zodResolver(schema),
       defaultValues: defaultValues ?? {
-         date: new Date(),
          hours: "0",
       },
    });
 
-   const date = useWatch({
-      control: form.control,
-      name: "date",
-   });
-
-   useEffect(() => {
-      if (!date) return;
-
-      startTransition(async () => {
-         const result = await getWorkEntry({
-            projectId,
-            day: date.getDate(),
-            month: date.getMonth() + 1,
-            year: date.getFullYear(),
-         });
-         form.setValue("hours", result.hours + "");
-      });
-   }, [date, form, projectId]);
-
    async function onSubmit(data: z.infer<typeof schema>) {
       setIsSubmitting(true);
-      const { hours, date } = data;
+      const { hours } = data;
 
       const day = date.getDate();
       const month = date.getMonth() + 1;
@@ -103,7 +65,8 @@ export function WorkEntryForm({
          month,
          year,
       });
-      form.reset();
+
+      form.reset({ hours });
       setIsSubmitting(false);
    }
 
@@ -136,88 +99,6 @@ export function WorkEntryForm({
          >
             <FormField
                control={form.control}
-               name="date"
-               render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                     <FormLabel>Date</FormLabel>
-                     <div className="mb-2 flex w-full items-center gap-2">
-                        {/* Previous day button */}
-                        <Button
-                           type="button"
-                           variant="outline"
-                           size="icon"
-                           onClick={() =>
-                              field.onChange(
-                                 addDays(field.value ?? new Date(), -1)
-                              )
-                           }
-                        >
-                           <ChevronLeftIcon />
-                        </Button>
-
-                        {/* Date picker popover button */}
-                        <Popover
-                           open={popoverOpen}
-                           onOpenChange={setPopoverOpen}
-                        >
-                           <PopoverTrigger asChild>
-                              <FormControl>
-                                 <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                       "w-full pl-3 text-left font-normal",
-                                       !field.value && "text-muted-foreground"
-                                    )}
-                                    onClick={() =>
-                                       setPopoverOpen((prev) => !prev)
-                                    }
-                                 >
-                                    {field.value ? (
-                                       format(field.value, "PPP", {
-                                          locale: fi,
-                                       })
-                                    ) : (
-                                       <span>Pick a date</span>
-                                    )}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                 </Button>
-                              </FormControl>
-                           </PopoverTrigger>
-                           <PopoverContent className="w-auto p-0">
-                              <Calendar
-                                 mode="single"
-                                 selected={field.value}
-                                 onSelect={(date) => {
-                                    field.onChange(date);
-                                    setPopoverOpen(false);
-                                 }}
-                                 initialFocus
-                                 locale={fi}
-                              />
-                           </PopoverContent>
-                        </Popover>
-
-                        {/* Next day button */}
-                        <Button
-                           type="button"
-                           variant="outline"
-                           size="icon"
-                           onClick={() =>
-                              field.onChange(
-                                 addDays(field.value ?? new Date(), 1)
-                              )
-                           }
-                        >
-                           <ChevronRightIcon />
-                        </Button>
-                     </div>
-                     <FormMessage />
-                  </FormItem>
-               )}
-            />
-
-            <FormField
-               control={form.control}
                name="hours"
                render={({ field }) => (
                   <FormItem>
@@ -228,21 +109,21 @@ export function WorkEntryForm({
                            type="button"
                            variant="outline"
                            size="icon"
+                           disabled={isSubmitting}
                            onClick={decrementHours}
-                           disabled={isPending}
                         >
                            <Minus className="h-4 w-4" />
                         </Button>
                         <FormControl>
-                           <HoursInput field={field} disabled={isPending} />
+                           <HoursInput field={field} disabled={isSubmitting} />
                         </FormControl>
                         <Button
                            className="w-full max-w-32"
                            type="button"
                            variant="outline"
                            size="icon"
+                           disabled={isSubmitting}
                            onClick={incrementHours}
-                           disabled={isPending}
                         >
                            <Plus className="h-4 w-4" />
                         </Button>
@@ -251,7 +132,6 @@ export function WorkEntryForm({
                            variant="secondary"
                            size="sm"
                            onClick={() => setPresetHours(7.5)}
-                           disabled={isPending}
                         >
                            7,5 h
                         </Button>
@@ -268,12 +148,6 @@ export function WorkEntryForm({
                )}
                Save Entry
             </Button>
-
-            {isPending && (
-               <div className="text-sm text-muted-foreground">
-                  Loading data for selected date…
-               </div>
-            )}
          </form>
       </Form>
    );
@@ -318,7 +192,7 @@ export function HoursInput({
       value: string | undefined; // always dot decimal internally
       onChange: (value: string | undefined) => void;
    };
-   disabled: boolean;
+   disabled?: boolean;
 }) {
    const decimalSeparator = ","; // display separator
 
@@ -408,7 +282,7 @@ export function HoursInput({
          className="text-center"
          onFocus={(e) => e.target.select()}
          {...field}
-         value={disabled ? "" : inputValue}
+         value={inputValue}
          onChange={handleInputChange}
          onBlur={handleBlur}
       />

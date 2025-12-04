@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { refresh } from "next/cache";
 
 import { getAuthUser } from "@/actions/utils";
 import { db } from "@/lib/db";
@@ -44,7 +44,7 @@ export async function upsertWorkEntry(
          hours,
       });
 
-      revalidatePath(`/dashboard/projects/${projectId}`);
+      refresh();
 
       return { success: true, data: result };
    } catch (error) {
@@ -53,34 +53,4 @@ export async function upsertWorkEntry(
       }
       return { success: false, error: "Unknown server error." };
    }
-}
-
-type GetWorkEntryParams = {
-   projectId: number;
-   day: number;
-   month: number;
-   year: number;
-};
-
-export async function getWorkEntry({
-   projectId,
-   day,
-   month,
-   year,
-}: GetWorkEntryParams) {
-   const user = await getAuthUser();
-
-   const entry = await db.workEntry.findWorkEntry({
-      userId: user.id,
-      projectId,
-      day,
-      month,
-      year,
-   });
-
-   if (!entry) {
-      return { hours: 0 };
-   }
-
-   return { hours: entry.hours };
 }

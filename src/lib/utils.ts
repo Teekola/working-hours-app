@@ -5,6 +5,13 @@ export function cn(...inputs: ClassValue[]) {
    return twMerge(clsx(inputs));
 }
 
-// This check can be removed, it is just for tutorial purposes
-export const hasEnvVars =
-   process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+export function getDateParam(date: Date) {
+   const year = date.getFullYear();
+   const month = date.getMonth() + 1;
+   const day = date.getDate();
+   return `${year}-${month}-${day}`;
+}
+
+export function getDateFromDateParam(date: string) {
+   return new Date(date);
+}

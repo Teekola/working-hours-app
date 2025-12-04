@@ -7,6 +7,7 @@ import { env } from "@/env";
 
 import "./globals.css";
 import RegisterSW from "./register-sw";
+import { ThemeToggle } from "@/components/theme-switcher";
 
 export const metadata: Metadata = {
    metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
@@ -27,7 +28,9 @@ export default function RootLayout({
 }>) {
    return (
       <html lang="en" suppressHydrationWarning>
-         <body className={`${geistSans.className} antialiased`}>
+         <body
+            className={`${geistSans.className} antialiased min-h-screen flex flex-col`}
+         >
             <ThemeProvider
                attribute="class"
                defaultTheme="system"
@@ -35,6 +38,9 @@ export default function RootLayout({
                disableTransitionOnChange
             >
                {children}
+               <footer className="mx-auto mt-auto flex w-full items-center justify-center gap-8 border-t py-16 text-center text-xs">
+                  <ThemeToggle />
+               </footer>
             </ThemeProvider>
             <RegisterSW />
          </body>

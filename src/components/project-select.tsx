@@ -16,6 +16,7 @@ import {
 import { Project } from "@/lib/generated/prisma/browser";
 
 import { ProjectDialogDrawer } from "./project-dialog-drawer";
+import { useParams } from "next/navigation";
 
 interface ProjectSelectProps {
    projects: Project[];
@@ -27,9 +28,11 @@ export function ProjectSelect({
    currentProjectName,
 }: ProjectSelectProps) {
    const [open, setOpen] = useState(false);
+   const { date: dateParam } = useParams<{ date: string }>();
+
    return (
       <DropdownMenu open={open} onOpenChange={setOpen}>
-         <DropdownMenuTrigger className="flex w-full items-center justify-between rounded-lg border p-2 text-left text-2xl font-bold">
+         <DropdownMenuTrigger className="flex w-full items-center justify-between rounded-lg border py-2 px-3 text-left text-2xl font-bold">
             {currentProjectName}
             <ChevronDownIcon
                className={`ml-2 h-6 w-6 ${open ? "rotate-180" : "rotate-0"}`}
@@ -39,7 +42,7 @@ export function ProjectSelect({
             {projects.map((project) => (
                <DropdownMenuItem asChild key={project.id}>
                   <Link
-                     href={`/dashboard/projects/${project.id}`}
+                     href={`/dashboard/projects/${project.id}/${dateParam}`}
                      className="block w-full flex-1 cursor-pointer py-2 text-base"
                   >
                      {project.name}
