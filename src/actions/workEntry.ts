@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { getAuthUser } from "@/actions/utils";
 import { db } from "@/lib/db";
-import { Prisma } from "@/lib/generated/prisma";
+import { Prisma } from "@/lib/generated/prisma/client";
 
 type UpsertWorkEntryInput = {
    projectId: number;
@@ -24,9 +24,13 @@ type UpsertWorkEntryError = {
    error: string;
 };
 
-export type UpsertWorkEntryResult = UpsertWorkEntrySuccess | UpsertWorkEntryError;
+export type UpsertWorkEntryResult =
+   | UpsertWorkEntrySuccess
+   | UpsertWorkEntryError;
 
-export async function upsertWorkEntry(input: UpsertWorkEntryInput): Promise<UpsertWorkEntryResult> {
+export async function upsertWorkEntry(
+   input: UpsertWorkEntryInput
+): Promise<UpsertWorkEntryResult> {
    try {
       const user = await getAuthUser();
       const { day, month, year, hours, projectId } = input;
@@ -58,7 +62,12 @@ type GetWorkEntryParams = {
    year: number;
 };
 
-export async function getWorkEntry({ projectId, day, month, year }: GetWorkEntryParams) {
+export async function getWorkEntry({
+   projectId,
+   day,
+   month,
+   year,
+}: GetWorkEntryParams) {
    const user = await getAuthUser();
 
    const entry = await db.workEntry.findWorkEntry({

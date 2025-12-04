@@ -6,8 +6,6 @@ if (!env) {
    console.log("No env imported");
 }
 
-const nextConfig: NextConfig = {
-   eslint: { ignoreDuringBuilds: true },
-};
+const nextConfig: NextConfig = {};
 
 export default nextConfig;

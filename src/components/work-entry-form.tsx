@@ -14,7 +14,7 @@ import {
    Minus,
    Plus,
 } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
 import { getWorkEntry, upsertWorkEntry } from "@/actions/workEntry";
@@ -39,7 +39,7 @@ import { cn } from "@/lib/utils";
 const schema = z.object({
    date: z.date(),
    hours: z
-      .string({ invalid_type_error: "Hours must be a number" })
+      .string({ message: "Hours must be a number" })
       .refine((v) => Number(v) <= 24 && Number(v) >= 0, {
          message: "Hours must be within 0-24",
       }),
@@ -70,7 +70,10 @@ export function WorkEntryForm({
       },
    });
 
-   const date = form.watch("date");
+   const date = useWatch({
+      control: form.control,
+      name: "date",
+   });
 
    useEffect(() => {
       if (!date) return;

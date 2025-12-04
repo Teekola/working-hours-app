@@ -13,7 +13,7 @@ import {
    DropdownMenuSeparator,
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Project } from "@/lib/generated/prisma";
+import { Project } from "@/lib/generated/prisma/browser";
 
 import { ProjectDialogDrawer } from "./project-dialog-drawer";
 
@@ -22,15 +22,20 @@ interface ProjectSelectProps {
    currentProjectName: string;
 }
 
-export function ProjectSelect({ projects, currentProjectName }: ProjectSelectProps) {
+export function ProjectSelect({
+   projects,
+   currentProjectName,
+}: ProjectSelectProps) {
    const [open, setOpen] = useState(false);
    return (
       <DropdownMenu open={open} onOpenChange={setOpen}>
          <DropdownMenuTrigger className="flex w-full items-center justify-between rounded-lg border p-2 text-left text-2xl font-bold">
             {currentProjectName}
-            <ChevronDownIcon className={`ml-2 h-6 w-6 ${open ? "rotate-180" : "rotate-0"}`} />
+            <ChevronDownIcon
+               className={`ml-2 h-6 w-6 ${open ? "rotate-180" : "rotate-0"}`}
+            />
          </DropdownMenuTrigger>
-         <DropdownMenuContent className="flex w-[var(--radix-dropdown-menu-trigger-width)] flex-1 flex-col">
+         <DropdownMenuContent className="flex w-(--radix-dropdown-menu-trigger-width) flex-1 flex-col">
             {projects.map((project) => (
                <DropdownMenuItem asChild key={project.id}>
                   <Link
